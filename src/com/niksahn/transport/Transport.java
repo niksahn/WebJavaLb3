@@ -3,7 +3,9 @@ package com.niksahn.transport;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import static com.niksahn.transport.Constants.*;
 import static com.niksahn.transport.UI.displayFullArrayMsg;
+import static com.niksahn.transport.UI.inputField;
 
 
 abstract class Transport {
@@ -20,6 +22,15 @@ abstract class Transport {
      * Переопределяемый метод для вывода информации
      */
     public abstract void display_info();
+
+    public void addToArray(){
+        if (current == transports.length) {
+            throw new ArrayIndexOutOfBoundsException();
+        } else {
+            transports[current] = this;
+            current += 1;
+        }
+    }
 
     /**
      * Задать размер массива
@@ -42,13 +53,6 @@ abstract class Transport {
         this.price = 0;
         this.mileage = 0;
         this.issueYear = null;
-
-        if (current == transports.length) {
-            displayFullArrayMsg();
-        } else {
-            transports[current] = this;
-            current += 1;
-        }
     }
 
     // Конструктор
@@ -57,28 +61,21 @@ abstract class Transport {
             int mileage,
             int price,
             int issueYear,
-            String type
+            String brand
     ) {
         this.registration_number = registration_number;
         this.mileage = mileage;
         this.price = price;
         this.issueYear = issueYear;
-        this.brand = type;
-
-        if (current == transports.length) {
-            displayFullArrayMsg();
-        } else {
-            transports[current] = this;
-            current += 1;
-        }
+        this.brand = brand;
     }
 
     /**
-     * Находит цену самого дешёвый авто
-     * @return цена
+     * Находит цену самого дешёвого авто
+     * @return цена или null - если автомобилей нет
      */
-    static Transport cheapest_auto() {
-        int cheapest = transports[0].price;
+    static Transport find_cheapest_auto() {
+        int cheapest = 99999999;
         Transport cheapest_auto = null;
         for (int i = 0; i < current; i++) {
             if (transports[i].price < cheapest && transports[i] instanceof Auto) {
@@ -92,8 +89,8 @@ abstract class Transport {
     /**
      * Определяет самый маленький пробег для машин старше 3 лет
      */
-    static int display_transport_shortest_mileage() {
-        int smallest_mileage = transports[0].mileage;
+    static Integer find_transport_shortest_mileage() {
+        Integer smallest_mileage = transports[0].mileage;
         Calendar calendar = Calendar.getInstance();
         int Year = calendar.get(Calendar.YEAR);
         for (int i = 0; i < current; i++) {
@@ -129,24 +126,23 @@ abstract class Transport {
      * Изменение полей базового класса
      *
      * @param change_field    номер изменяемого поля [ 1 - registration_number, 2 - mileage, 3 - price, 4 - issueYear, 5 - brand ]
-     * @param new_field_value новое значение
      */
-    public void change_fields(int change_field, String new_field_value) {
+    public void change_fields(int change_field) {
         switch (change_field) {
             case 1:
-                this.registration_number = new_field_value;
+                this.registration_number = inputField(number_pattern);
                 break;
             case 2:
-                this.mileage = Integer.parseInt(new_field_value);
+                this.mileage = Integer.parseInt(inputField(positive_int_pattern));
                 break;
             case 3:
-                this.price = Integer.parseInt(new_field_value);
+                this.price = Integer.parseInt(inputField(positive_int_pattern));
                 break;
             case 4:
-                this.issueYear = Integer.parseInt(new_field_value);
+                this.issueYear = Integer.parseInt(inputField(positive_int_pattern));
                 break;
             case 5:
-                this.brand = new_field_value;
+                this.brand = inputField(string_pattern);
                 break;
         }
     }

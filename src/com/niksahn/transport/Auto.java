@@ -1,12 +1,13 @@
 package com.niksahn.transport;
 
+import static com.niksahn.transport.Constants.*;
 import static com.niksahn.transport.UI.displayAuto;
-import static com.niksahn.transport.UI.inputAuto;
+import static com.niksahn.transport.UI.inputField;
 
 public class Auto extends Transport {
 
     /**
-     * Праворульная ли
+     * Тип руля
      */
     protected String hand;
 
@@ -37,21 +38,26 @@ public class Auto extends Transport {
     }
 
     Auto() {
-        inputAuto();
+        super();
+        this.hand = null;
+        this.transmission = null;
+        this.body = null;
+        this.drive = null;
+        this.doors = null;
     }
 
     Auto(String registration_number,
          int mileage,
          int price,
          int issueYear,
-         String type,
+         String brand,
          String hand,
          String transmission,
          String body,
          String drive,
          Integer doors
     ) {
-        super(registration_number, mileage, price, issueYear, type);
+        super(registration_number, mileage, price, issueYear, brand);
         this.body = body;
         this.doors = doors;
         this.hand = hand;
@@ -59,23 +65,23 @@ public class Auto extends Transport {
         this.drive = drive;
     }
 
-    public void change_fields(int change_field, String new_field_value) {
-        super.change_fields(change_field, new_field_value);
+    public void change_fields(int change_field) {
+        super.change_fields(change_field);
         switch (change_field) {
             case 6:
-                this.hand = new_field_value;
+                this.hand = inputField(hand_pattern);
                 break;
             case 7:
-                this.doors = Integer.parseInt(new_field_value);
+                this.doors = Integer.parseInt(inputField(positive_int_pattern));
                 break;
             case 8:
-                this.body = new_field_value;
+                this.body =  inputField(string_pattern);
                 break;
             case 9:
-                this.transmission = new_field_value;
+                this.transmission = inputField(transmission_pattern);
                 break;
             case 10:
-                this.drive = new_field_value;
+                this.drive = inputField(drive_pattern);
                 break;
         }
     }
