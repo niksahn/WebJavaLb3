@@ -123,6 +123,20 @@ abstract class UI {
                 + "\nКоробка передач " + auto.transmission + "\nЧисло дверей " + auto.doors + "\n");
     }
 
+    /**
+     * Вывод параметров мотоцикла
+     * */
+
+    static public void displayMoto(Moto moto) {
+        displayInfo("Мотоцикл \n");
+        displayDefault(moto);
+        displayInfo("Тип " + moto.type + "\n" + "Число колёс " + moto.wheelsNum + "\n"
+        + "Топливная система " + moto.type + "\n");
+        if(moto.electroStarter) displayInfo("Электростартер");
+        if(moto.sidecarEnabled) displayInfo("Возможность установки коляски");
+
+    }
+
     static public String inputField(Pattern pattern) {
         String a = inputInfo();
         while (!pattern.matcher(a).matches()) {
@@ -156,8 +170,8 @@ abstract class UI {
         }
     }
 
-// TODO Ввод и вывод мотоцикла
 
+// TODO Ввод и вывод мотоцикла
     /**
      * Ввод автомобиля
      */
@@ -184,6 +198,35 @@ abstract class UI {
         displayInfo("Введите число дверей");
         int doors = Integer.parseInt(inputField(positive_int_pattern));
         return new Auto(number, mileage, price, year, brand, hand, transmission, body, drive, doors);
+    }
+
+    /**
+     * Ввод мотоцикла
+     * */
+    static public Moto inputMoto() {
+        displayInfo("Введите параметры мотоцикла");
+        displayInfo("Введите номер");
+        String number = inputField(number_pattern);
+        displayInfo("Введите пробег");
+        int mileage = Integer.parseInt(inputField(positive_int_pattern));
+        displayInfo("Введите цену");
+        int price = Integer.parseInt(inputField(positive_int_pattern));
+        displayInfo("Введите год");
+        int year = Integer.parseInt(inputField(positive_int_pattern));
+        displayInfo("Введите марку");
+        String brand = inputField(string_pattern);
+        displayInfo("Введите тип мотоцикла");
+        String type = inputField(string_pattern);
+        displayInfo("Введите число колёс");
+        int wheels = Integer.parseInt(inputField(positive_int_pattern));
+        displayInfo("Возможно ли установить коляску?");
+        Boolean sideCar = Boolean.valueOf(inputField(boolean_pattern));
+        displayInfo("Установлен ли электростартер?");
+        Boolean electrostarter = Boolean.valueOf(inputField(boolean_pattern));
+        displayInfo("Укажите систему питания");
+        String fuelSystem = inputField(string_pattern);
+        return new Moto(number, mileage, price, year, brand, type, wheels, electrostarter, sideCar, fuelSystem);
+
     }
 }
 
