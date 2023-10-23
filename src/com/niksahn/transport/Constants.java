@@ -18,4 +18,7 @@ class Constants {
     private static final String drive_regex = "^ *([Пп]олный)|([пП]ередний)|([зЗ]адний) *$";
     public static Pattern drive_pattern = Pattern.compile(drive_regex);
 
+    private static final String boolean_regex = "^ *[0-1]*$";
+    public static Pattern boolean_pattern = Pattern.compile(boolean_regex);
+
 }
