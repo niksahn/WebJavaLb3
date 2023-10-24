@@ -65,25 +65,26 @@ public class Auto extends Transport {
         this.drive = drive;
     }
 
-    public void change_fields(int change_field) {
-        super.change_fields(change_field);
+    public void change_fields(int change_field, String new_val) {
+        super.change_fields(change_field, new_val);
         switch (change_field) {
             case 6:
-                this.hand = inputField(hand_pattern);
+                this.hand = new_val;
                 break;
             case 7:
-                this.doors = Integer.parseInt(inputField(positive_int_pattern));
+                this.doors = Integer.parseInt(new_val);
                 break;
             case 8:
-                this.body =  inputField(string_pattern);
+                this.body = new_val;
                 break;
             case 9:
-                this.transmission = inputField(transmission_pattern);
+                this.transmission = new_val;
                 break;
             case 10:
-                this.drive = inputField(drive_pattern);
+                this.drive = new_val;
                 break;
         }
     }
 
 }
+/* */

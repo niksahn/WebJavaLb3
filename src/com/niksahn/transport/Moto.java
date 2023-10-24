@@ -63,23 +63,23 @@ public class Moto extends Transport {
         this.fuelSystem = fuelSystem;
     }
 
-    public void change_fields(int change_field) {
-        super.change_fields(change_field);
+    public void change_fields(int change_field, String new_val) {
+        super.change_fields(change_field,new_val);
         switch (change_field) {
             case 6:
-                this.type = inputField(string_pattern);
+                this.type = new_val;
                 break;
             case 7:
-                this.electroStarter = Boolean.valueOf(inputField(boolean_pattern));
+                this.electroStarter = Boolean.valueOf(new_val);
                 break;
             case 8:
-                this.wheelsNum = Integer.valueOf(inputField(string_pattern));
+                this.wheelsNum = Integer.valueOf(new_val);
                 break;
             case 9:
-                this.sidecarEnabled = Boolean.valueOf(inputField(boolean_pattern));
+                this.sidecarEnabled = Boolean.valueOf(new_val);
                 break;
             case 10:
-                this.fuelSystem = inputField(string_pattern);
+                this.fuelSystem = new_val;
                 break;
         }
     }

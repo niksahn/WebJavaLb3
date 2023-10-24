@@ -7,15 +7,16 @@ import java.util.regex.Pattern;
 import static com.niksahn.transport.Constants.*;
 import static com.niksahn.transport.Constants.positive_int_pattern;
 import static com.niksahn.transport.Transport.*;
+import static com.niksahn.transport.Transport.display_transport;
 
 abstract class UI {
     static private final Scanner in = new Scanner(System.in);
 
-    static private void displayInfo(String str) {
+    static void displayInfo(String str) {
         System.out.println(str);
     }
 
-    static private String inputInfo() {
+    static String inputInfo() {
         return in.nextLine();
     }
 
@@ -26,64 +27,53 @@ abstract class UI {
         displayInfo("22ВП3 Бригада 3 Сахно и Новосельцев \n Вариант №3: Класс 'Транспорт' \n");
     }
 
-    /**
-     *
-     */
     static public void intaractionStart() {
-        Boolean flag = false;
-        String command = "";
+        boolean flag = false;
+        String command;
         while (!flag) {
-            displayInfo("Что вы хотите сделать?");
+            displayInfo("\nЧто вы хотите сделать?");
             displayHelpList();
             command = inputInfo();
-            switch (command) {
-                case "1":
-                    try {
-                        createTransport();
-                    } catch (ArrayIndexOutOfBoundsException a) {
-                        displayFullArrayMsg();
-                    }
-                    break;
-                case "2":
-                    try {
-                        find_cheapest_auto().display_info();
-                    } catch (NullPointerException e) {
-                        displayTransportNotFound();
-                    }
-                    break;
-                case "3":
-                    try {
+            try {
+                switch (command) {
+                    case "1":
+                        createTransport().addToArray();
+                        break;
+                    case "2":
+                        displayInfo(find_cheapest_auto().toString());
+                        break;
+                    case "3":
                         displayInfo(find_transport_shortest_mileage().toString());
-
-                    } catch (NullPointerException e) {
-                        displayTransportNotFound();
-                    }
-                    break;
-                case "4":
-                    sort_by_year();
-                    display_transport();
-                    break;
-                case "5":
-                    try {
+                        break;
+                    case "4":
+                        sort_by_year();
+                        display_transport();
+                        break;
+                    case "5":
                         displayInfo("Введите номер транспорта");
                         String number = inputField(number_pattern);
-                        changeField(find_by_number(number));
-                    } catch (NullPointerException e) {
-                        displayTransportNotFound();
-                    }
-                    break;
-                case "6":
-                    display_transport();
-                    break;
-                default:
-                    flag = true;
-                    break;
+                        changeField(find_by_number(number)).display_info();
+                        break;
+                    case "6":
+                        display_transport();
+                        break;
+                    default:
+                        flag = true;
+                        break;
+                }
+            } catch (NullPointerException e) {
+                displayTransportNotFound();
+            } catch (ArrayIndexOutOfBoundsException a) {
+                displayFullArrayMsg();
+            } catch (EmptyArray a) {
+                displayArrayEmpty();
             }
         }
     }
 
-    static private void displayHelpList() {
+    static void displayHelpList() {
         displayInfo("""
+                
                 1 Создать новый транспорт
                 2 Найти цену самого дешёвого авто
                 3 Определить самый маленький пробег для машин старше 3 лет
@@ -91,6 +81,7 @@ abstract class UI {
                 5 Поиск по номеру и изменение
                 6 Вывод массива на экран
                 Иное выход
+                
                 """);
     }
 
@@ -101,8 +92,18 @@ abstract class UI {
         displayInfo("Массив заполнен");
     }
 
-    static private void displayTransportNotFound() {
+    /**
+     * Вывод сообщения о том, что транспорт не найден
+     */
+    static void displayTransportNotFound() {
         displayInfo("Такого транспорта нет!");
+    }
+
+    /**
+     * Вывод сообщения о том, что транспорт не найден
+     */
+    static void displayArrayEmpty() {
+        displayInfo("Массив пуст!");
     }
 
     private static void displayDefault(Transport transport) {
@@ -125,18 +126,25 @@ abstract class UI {
 
     /**
      * Вывод параметров мотоцикла
-     * */
+     *
+     * @param moto мотоцикл
+     */
 
     static public void displayMoto(Moto moto) {
         displayInfo("Мотоцикл \n");
         displayDefault(moto);
         displayInfo("Тип " + moto.type + "\n" + "Число колёс " + moto.wheelsNum + "\n"
-        + "Топливная система " + moto.type + "\n");
-        if(moto.electroStarter) displayInfo("Электростартер");
-        if(moto.sidecarEnabled) displayInfo("Возможность установки коляски");
+                + "Топливная система \n" + moto.type + "\n");
+        if (moto.electroStarter) displayInfo("Электростартер");
+        if (moto.sidecarEnabled) displayInfo("Возможность установки коляски");
 
     }
 
+    /**
+     * Ввод поля по паттерну
+     *
+     * @param pattern паттерн
+     */
     static public String inputField(Pattern pattern) {
         String a = inputInfo();
         while (!pattern.matcher(a).matches()) {
@@ -146,32 +154,81 @@ abstract class UI {
         return a;
     }
 
-    static private void createTransport() {
+    /**
+     * Создать транспорт
+     */
+    static Transport createTransport() {
         displayInfo("Какой тип транспорта хотите создать 1 - Автомобиль 2 - Мотоцикл");
         String a = inputInfo();
-        switch (a) {
-            case "1":
-                inputAuto().addToArray();
-                break;
-            case "2":
-                break;
-        }
+        return switch (a) {
+            case "1" -> inputAuto();
+            case "2" -> inputMoto();
+            default -> null;
+        };
     }
 
-    static private void changeField(Transport a) {
+    /**
+     * Изменение поля объекта [Transport]
+     * @param  a изменяемый транспорт
+     * @return  измененный транспорт
+     */
+    static Transport changeField(Transport a) {
         try {
-            displayInfo("Введите номер изменяемого поля 1 - registration_number, 2 - mileage, 3 - price," +
-                    " 4 - issueYear, 5 - brand hand " +
-                    "6 Тип руля 7 Тип трансмиссии 8 Тип кузова 9 Привод 10 Количество дверей");
-            String field = inputInfo();
-
-            a.change_fields(Integer.parseInt(field));
+            if (a instanceof Auto)
+                displayInfo("Введите номер изменяемого поля 1 - registration_number, 2 - mileage, 3 - price," +
+                        " 4 - issueYear, 5 - brand hand " +
+                        "6 Тип руля 7 Тип трансмиссии 8 Тип кузова 9 Привод 10 Количество дверей");
+            else if (a instanceof Moto)
+                displayInfo("Введите номер изменяемого поля 1 - registration_number, 2 - mileage, 3 - price," +
+                        " 4 - issueYear, 5 - brand hand " +
+                        "6 Тип мотоцикла 7 Количество колёс 8 Возможность установки коляски 9 Наличие электростартера 10 Тип топливной системы");
+            int field = Integer.parseInt(inputInfo());
+            switch (field) {
+                case 1:
+                    a.change_fields(field, inputField(number_pattern));
+                    break;
+                case 2, 3, 4:
+                    a.change_fields(field, inputField(positive_int_pattern));
+                    break;
+                case 5:
+                    a.change_fields(field, inputField(string_pattern));
+                    break;
+                default:
+                    if (a instanceof Auto) {
+                        switch (field) {
+                            case 6:
+                                a.change_fields(field, inputField(hand_pattern));
+                                break;
+                            case 7:
+                                a.change_fields(field, inputField(positive_int_pattern));
+                                break;
+                            case 8:
+                                a.change_fields(field, inputField(string_pattern));
+                                break;
+                            case 9:
+                                a.change_fields(field,  inputField(transmission_pattern));
+                                break;
+                            case 10:
+                                a.change_fields(field, inputField(drive_pattern));
+                                break;
+                        }
+                    } else if (a instanceof Moto) {
+                        switch (field) {
+                            case 6, 8, 10:
+                                a.change_fields(field, inputField(string_pattern));
+                                break;
+                            case 7, 9:
+                                a.change_fields(field, inputField(boolean_pattern));
+                                break;
+                        }
+                    }
+            }
         } catch (NumberFormatException ignored) {
         }
+        return a;
     }
 
 
-// TODO Ввод и вывод мотоцикла
     /**
      * Ввод автомобиля
      */
@@ -202,7 +259,7 @@ abstract class UI {
 
     /**
      * Ввод мотоцикла
-     * */
+     */
     static public Moto inputMoto() {
         displayInfo("Введите параметры мотоцикла");
         displayInfo("Введите номер");
@@ -226,7 +283,6 @@ abstract class UI {
         displayInfo("Укажите систему питания");
         String fuelSystem = inputField(string_pattern);
         return new Moto(number, mileage, price, year, brand, type, wheels, electrostarter, sideCar, fuelSystem);
-
     }
 }
 

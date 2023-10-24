@@ -3,12 +3,8 @@ package com.niksahn.transport;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static com.niksahn.transport.Constants.*;
-import static com.niksahn.transport.UI.displayFullArrayMsg;
-import static com.niksahn.transport.UI.inputField;
-
-
 abstract class Transport {
+    static final int initial_length = 20;
     protected String registration_number;
     protected Integer mileage;
     protected Integer price;
@@ -23,7 +19,12 @@ abstract class Transport {
      */
     public abstract void display_info();
 
-    public void addToArray(){
+    /**
+     * Добавляет транспорт в массив
+     *
+     * @throws ArrayIndexOutOfBoundsException выход за границу
+     */
+    public void addToArray() {
         if (current == transports.length) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
@@ -32,18 +33,27 @@ abstract class Transport {
         }
     }
 
+    static {
+        Transport.transports = new Transport[initial_length];
+    }
+
     /**
      * Задать размер массива
      */
-    static void set_transport_length(int length) {
+    public static void set_transport_length(int length) {
         Transport.transports = new Transport[length];
     }
 
-    /** Вывод массива */
-    static void display_transport() {
+    /**
+     * Вывод массива
+     *
+     * @throws EmptyArray если пуст
+     */
+    public static void display_transport() throws EmptyArray {
         for (int i = 0; i < current; i++) {
             transports[i].display_info();
         }
+        if (current == 0) throw new EmptyArray();
     }
 
     // Конструктор по умолчанию
@@ -72,9 +82,11 @@ abstract class Transport {
 
     /**
      * Находит цену самого дешёвого авто
-     * @return цена или null - если автомобилей нет
+     *
+     * @return цена
+     * @throws NullPointerException не найдено
      */
-    static Transport find_cheapest_auto() {
+    public static Integer find_cheapest_auto() {
         int cheapest = 99999999;
         Transport cheapest_auto = null;
         for (int i = 0; i < current; i++) {
@@ -83,28 +95,33 @@ abstract class Transport {
                 cheapest_auto = transports[i];
             }
         }
-        return cheapest_auto;
+        if (cheapest_auto == null) throw new NullPointerException();
+        return cheapest;
     }
 
     /**
      * Определяет самый маленький пробег для машин старше 3 лет
+     * @return значение самого маленького пробега авто
+     * @throws NullPointerException в массиве нет авто
      */
-    static Integer find_transport_shortest_mileage() {
-        Integer smallest_mileage = transports[0].mileage;
+    public static Integer find_transport_shortest_mileage() {
+        Integer smallest_mileage = Integer.MAX_VALUE;
         Calendar calendar = Calendar.getInstance();
         int Year = calendar.get(Calendar.YEAR);
+        // return Arrays.stream(transports).filter((Transport a) -> Year - a.issueYear >= 3 && a instanceof Auto).min((Transport a, Transport b) -> b.mileage - a.mileage).get().mileage;
         for (int i = 0; i < current; i++) {
             if (transports[i].mileage < smallest_mileage && Year - transports[i].issueYear >= 3 && transports[i] instanceof Auto) {
                 smallest_mileage = transports[i].mileage;
             }
         }
+        if (smallest_mileage==Integer.MAX_VALUE) throw new NullPointerException();
         return smallest_mileage;
     }
 
     /**
      * Сортировка по году выпуска
      **/
-    static void sort_by_year() {
+    public static void sort_by_year() {
         Arrays.sort(transports, (Transport a, Transport b) -> b.issueYear - a.issueYear);
     }
 
@@ -112,47 +129,41 @@ abstract class Transport {
     /**
      * Поиск по номеру
      *
-     * @return null если не найдено, Transport если найдено
+     * @return Transport если найдено
+     * @throws NullPointerException если не найдено
      **/
-    static Transport find_by_number(String registration_number) {
+    public static Transport find_by_number(String registration_number) {
         for (int i = 0; i < current; i++)
             if (registration_number.equals(transports[i].registration_number)) {
                 return transports[i];
             }
-        return null;
+        throw new NullPointerException();
     }
 
     /**
      * Изменение полей базового класса
      *
-     * @param change_field    номер изменяемого поля [ 1 - registration_number, 2 - mileage, 3 - price, 4 - issueYear, 5 - brand ]
+     * @param change_field номер изменяемого поля [ 1 - registration_number, 2 - mileage, 3 - price, 4 - issueYear, 5 - brand ]
      */
-    public void change_fields(int change_field) {
+    public void change_fields(int change_field, String new_val) {
         switch (change_field) {
             case 1:
-                this.registration_number = inputField(number_pattern);
+                this.registration_number = new_val;
                 break;
             case 2:
-                this.mileage = Integer.parseInt(inputField(positive_int_pattern));
+                this.mileage = Integer.parseInt(new_val);
                 break;
             case 3:
-                this.price = Integer.parseInt(inputField(positive_int_pattern));
+                this.price = Integer.parseInt(new_val);
                 break;
             case 4:
-                this.issueYear = Integer.parseInt(inputField(positive_int_pattern));
+                this.issueYear = Integer.parseInt(new_val);
                 break;
             case 5:
-                this.brand = inputField(string_pattern);
+                this.brand = new_val;
                 break;
         }
     }
-
-
-    /**
-     * Проверка на заполненноть масисива
-     */
-    static boolean transport_Full() {
-        return current == transports.length;
-    }
-
 }
+
+class EmptyArray extends Throwable {}
