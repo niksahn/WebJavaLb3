@@ -21,18 +21,8 @@ abstract class Transport {
 
     /**
      * Добавляет транспорт в массив
-     *
-     * @throws ArrayIndexOutOfBoundsException выход за границу
      */
     public void addToArray() {
-        /*
-        if (current == transports.length) {
-            throw new ArrayIndexOutOfBoundsException();
-        } else {
-            transports[current] = this;
-            current += 1;
-        }
-         */
         Transport[] newArray = new Transport[transports.length + 1];
         System.arraycopy(transports, 0, newArray, 0, transports.length);
         newArray[transports.length] = this;
@@ -43,13 +33,6 @@ abstract class Transport {
 
     static {
         Transport.transports = new Transport[initial_length];
-    }
-
-    /**
-     * Задать размер массива
-     */
-    public static void set_transport_length(int length) {
-        Transport.transports = new Transport[length];
     }
 
     /**
@@ -95,7 +78,7 @@ abstract class Transport {
      * @throws NullPointerException не найдено
      */
     public static Integer find_cheapest_auto() {
-        int cheapest = 99999999;
+        int cheapest = Integer.MAX_VALUE;
         Transport cheapest_auto = null;
         for (int i = 0; i < current; i++) {
             if (transports[i].price < cheapest && transports[i] instanceof Auto) {

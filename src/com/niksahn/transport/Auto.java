@@ -1,8 +1,6 @@
 package com.niksahn.transport;
 
-import static com.niksahn.transport.Constants.*;
 import static com.niksahn.transport.UI.displayAuto;
-import static com.niksahn.transport.UI.inputField;
 
 public class Auto extends Transport {
 
@@ -85,6 +83,4 @@ public class Auto extends Transport {
                 break;
         }
     }
-
 }
-/* */

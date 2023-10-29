@@ -63,8 +63,6 @@ abstract class UI {
                 }
             } catch (NullPointerException e) {
                 displayTransportNotFound();
-            } catch (ArrayIndexOutOfBoundsException a) {
-                displayFullArrayMsg();
             } catch (EmptyArray a) {
                 displayArrayEmpty();
             }
@@ -73,7 +71,7 @@ abstract class UI {
 
     static void displayHelpList() {
         displayInfo("""
-                
+                                
                 1 Создать новый транспорт
                 2 Найти цену самого дешёвого авто
                 3 Определить самый маленький пробег для машин старше 3 лет
@@ -81,15 +79,8 @@ abstract class UI {
                 5 Поиск по номеру и изменение
                 6 Вывод массива на экран
                 Иное выход
-                
+                                
                 """);
-    }
-
-    /**
-     * Вывод сообщения о заполненности массива
-     */
-    static public void displayFullArrayMsg() {
-        displayInfo("Массив заполнен");
     }
 
     /**
@@ -134,7 +125,7 @@ abstract class UI {
         displayInfo("Мотоцикл \n");
         displayDefault(moto);
         displayInfo("Тип " + moto.type + "\n" + "Число колёс " + moto.wheelsNum + "\n"
-                + "Топливная система \n" + moto.type);
+                + "Топливная система " + moto.fuelSystem);
         if (moto.electroStarter) displayInfo("Электростартер");
         if (moto.sidecarEnabled) displayInfo("Возможность установки коляски");
         displayInfo("\n");
@@ -170,8 +161,9 @@ abstract class UI {
 
     /**
      * Изменение поля объекта [Transport]
-     * @param  a изменяемый транспорт
-     * @return  измененный транспорт
+     *
+     * @param a изменяемый транспорт
+     * @return измененный транспорт
      */
     static Transport changeField(Transport a) {
         try {
@@ -207,7 +199,7 @@ abstract class UI {
                                 a.change_fields(field, inputField(string_pattern));
                                 break;
                             case 9:
-                                a.change_fields(field,  inputField(transmission_pattern));
+                                a.change_fields(field, inputField(transmission_pattern));
                                 break;
                             case 10:
                                 a.change_fields(field, inputField(drive_pattern));
@@ -277,9 +269,9 @@ abstract class UI {
         String type = inputField(string_pattern);
         displayInfo("Введите число колёс");
         int wheels = Integer.parseInt(inputField(positive_int_pattern));
-        displayInfo("Возможно ли установить коляску?");
+        displayInfo("Возможно ли установить коляску?(0 - если нет, 1 - если да)");
         Boolean sideCar = Boolean.valueOf(inputField(boolean_pattern));
-        displayInfo("Установлен ли электростартер?");
+        displayInfo("Установлен ли электростартер?(0 - если нет, 1 - если да)");
         Boolean electrostarter = Boolean.valueOf(inputField(boolean_pattern));
         displayInfo("Укажите систему питания");
         String fuelSystem = inputField(string_pattern);
