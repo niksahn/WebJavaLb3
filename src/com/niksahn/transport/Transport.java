@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 abstract class Transport {
-    static final int initial_length = 20;
+    static int initial_length = 0;
     protected String registration_number;
     protected Integer mileage;
     protected Integer price;
@@ -25,12 +25,20 @@ abstract class Transport {
      * @throws ArrayIndexOutOfBoundsException выход за границу
      */
     public void addToArray() {
+        /*
         if (current == transports.length) {
             throw new ArrayIndexOutOfBoundsException();
         } else {
             transports[current] = this;
             current += 1;
         }
+         */
+        Transport[] newArray = new Transport[transports.length + 1];
+        System.arraycopy(transports, 0, newArray, 0, transports.length);
+        newArray[transports.length] = this;
+        transports = newArray;
+        initial_length += 1;
+        current += 1;
     }
 
     static {

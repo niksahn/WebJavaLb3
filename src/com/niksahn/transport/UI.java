@@ -134,9 +134,10 @@ abstract class UI {
         displayInfo("Мотоцикл \n");
         displayDefault(moto);
         displayInfo("Тип " + moto.type + "\n" + "Число колёс " + moto.wheelsNum + "\n"
-                + "Топливная система \n" + moto.type + "\n");
+                + "Топливная система \n" + moto.type);
         if (moto.electroStarter) displayInfo("Электростартер");
         if (moto.sidecarEnabled) displayInfo("Возможность установки коляски");
+        displayInfo("\n");
 
     }
 

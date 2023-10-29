@@ -21,7 +21,7 @@ public class Main {
     private static void initArr() {
         for (int i = 1; i < 6; i++) {
             new Auto(
-                    "aa111a58",
+                    "a11" + i + "aa58",
                     i * 10,
                     i * 1111,
                     2004 + i,
@@ -33,7 +33,7 @@ public class Main {
                     4
             ).addToArray();
             new Moto(
-                    "aa111a58",
+                    "a" + i + "11am58",
                     i * 10,
                     i * 1111,
                     2004 + i,
