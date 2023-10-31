@@ -1,6 +1,5 @@
 package com.niksahn.transport;
 
-import static com.niksahn.transport.UI.displayAuto;
 
 public class Auto extends Transport {
 
@@ -31,8 +30,8 @@ public class Auto extends Transport {
 
 
     @Override
-    public void display_info() {
-        displayAuto(this);
+    public void display_info(UI ui) {
+        ui.display(this.toString());
     }
 
     Auto() {
@@ -82,5 +81,11 @@ public class Auto extends Transport {
                 this.drive = new_val;
                 break;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Автомобиль \n" + super.toString() + "Привод " + this.drive + "\n" + this.hand + "\nКузов " + this.body
+                + "\nКоробка передач " + this.transmission + "\nЧисло дверей " + this.doors + "\n";
     }
 }

@@ -9,10 +9,11 @@ import static com.niksahn.transport.UI.*;
 
 public class Main {
 
+    static final UI  ui = new UI();
     public static void main(String[] args) {
         displayInfoMsg();
         initArr();
-        intaractionStart();
+        ui.intaractionStart();
     }
 
     /**

@@ -2,6 +2,8 @@ package com.niksahn.transport;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.EmptyStackException;
+import java.util.Objects;
 
 abstract class Transport {
     static int initial_length = 0;
@@ -17,7 +19,7 @@ abstract class Transport {
     /**
      * Переопределяемый метод для вывода информации
      */
-    public abstract void display_info();
+    public abstract void display_info(UI ui);
 
     /**
      * Добавляет транспорт в массив
@@ -38,13 +40,13 @@ abstract class Transport {
     /**
      * Вывод массива
      *
-     * @throws EmptyArray если пуст
+     * @throws EmptyStackException если пуст
      */
-    public static void display_transport() throws EmptyArray {
+    public static void display_transport(UI ui) {
         for (int i = 0; i < current; i++) {
-            transports[i].display_info();
+            transports[i].display_info(ui);
         }
-        if (current == 0) throw new EmptyArray();
+        if (current == 0) throw new EmptyStackException();
     }
 
     // Конструктор по умолчанию
@@ -64,6 +66,7 @@ abstract class Transport {
             int issueYear,
             String brand
     ) {
+        checkNumberUnique(registration_number);
         this.registration_number = registration_number;
         this.mileage = mileage;
         this.price = price;
@@ -92,6 +95,7 @@ abstract class Transport {
 
     /**
      * Определяет самый маленький пробег для машин старше 3 лет
+     *
      * @return значение самого маленького пробега авто
      * @throws NullPointerException в массиве нет авто
      */
@@ -105,7 +109,7 @@ abstract class Transport {
                 smallest_mileage = transports[i].mileage;
             }
         }
-        if (smallest_mileage==Integer.MAX_VALUE) throw new NullPointerException();
+        if (smallest_mileage == Integer.MAX_VALUE) throw new NullPointerException();
         return smallest_mileage;
     }
 
@@ -139,7 +143,7 @@ abstract class Transport {
     public void change_fields(int change_field, String new_val) {
         switch (change_field) {
             case 1:
-                this.registration_number = new_val;
+                if (checkNumberUnique(new_val)) this.registration_number = new_val;
                 break;
             case 2:
                 this.mileage = Integer.parseInt(new_val);
@@ -155,6 +159,25 @@ abstract class Transport {
                 break;
         }
     }
+
+    /**
+     * @return true если номер уникальный
+     * @throws RepeatNumberExeption
+     **/
+    public static boolean checkNumberUnique(String new_val) {
+        if (Arrays.stream(transports).anyMatch((Transport a) -> Objects.equals(a.registration_number, new_val))) {
+            throw new RepeatNumberExeption();
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Цена " + this.price + "\nПробег " + this.mileage + "\nМарка "
+                + this.brand + "\nГод выпуска " + this.issueYear + "\nНомер "
+                + this.registration_number;
+    }
 }
 
-class EmptyArray extends Throwable {}
+class RepeatNumberExeption extends RuntimeException {
+}

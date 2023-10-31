@@ -1,13 +1,12 @@
 package com.niksahn.transport;
 
-import static com.niksahn.transport.Constants.*;
-import static com.niksahn.transport.UI.displayMoto;
-import static com.niksahn.transport.UI.inputField;
+
+import static com.niksahn.transport.Main.ui;
 
 public class Moto extends Transport {
     /**
-    * Тип мотоцикла
-    */
+     * Тип мотоцикла
+     */
     protected String type;
 
     /**
@@ -31,11 +30,11 @@ public class Moto extends Transport {
     protected String fuelSystem;
 
     @Override
-    public void display_info() {
-        displayMoto(this);
+    public void display_info(UI ui) {
+        ui.display(this.toString());
     }
 
-    Moto(){
+    Moto() {
         super();
         this.type = null;
         this.electroStarter = null;
@@ -64,7 +63,7 @@ public class Moto extends Transport {
     }
 
     public void change_fields(int change_field, String new_val) {
-        super.change_fields(change_field,new_val);
+        super.change_fields(change_field, new_val);
         switch (change_field) {
             case 6:
                 this.type = new_val;
@@ -83,4 +82,14 @@ public class Moto extends Transport {
                 break;
         }
     }
+
+    @Override
+    public String toString() {
+        String dopInf = "";
+        if (this.electroStarter) dopInf += "Электростартер\n";
+        if (this.sidecarEnabled) dopInf += "Возможность установки коляски\n";
+        return "Мотоцикл \n" + super.toString() + "Тип " + this.type + "\n" + "Число колёс " + this.wheelsNum + "\n"
+                + "Топливная система " + this.fuelSystem + "\n" + dopInf;
+    }
+
 }

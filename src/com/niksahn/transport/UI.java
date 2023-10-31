@@ -9,10 +9,13 @@ import static com.niksahn.transport.Constants.positive_int_pattern;
 import static com.niksahn.transport.Transport.*;
 import static com.niksahn.transport.Transport.display_transport;
 
-abstract class UI {
+class UI {
     static private final Scanner in = new Scanner(System.in);
 
-    static void displayInfo(String str) {
+    public static void displayInfo(String str) {
+        System.out.println(str);
+    }
+    public void display(String str) {
         System.out.println(str);
     }
 
@@ -27,7 +30,7 @@ abstract class UI {
         displayInfo("22ВП3 Бригада 3 Сахно и Новосельцев \n Вариант №3: Класс 'Транспорт' \n");
     }
 
-    static public void intaractionStart() {
+     public void intaractionStart() {
         boolean flag = false;
         String command;
         while (!flag) {
@@ -47,15 +50,15 @@ abstract class UI {
                         break;
                     case "4":
                         sort_by_year();
-                        display_transport();
+                        display_transport(this);
                         break;
                     case "5":
                         displayInfo("Введите номер транспорта");
                         String number = inputField(number_pattern);
-                        changeField(find_by_number(number)).display_info();
+                        changeField(find_by_number(number)).display_info(this);
                         break;
                     case "6":
-                        display_transport();
+                        display_transport(this);
                         break;
                     default:
                         flag = true;
@@ -63,8 +66,8 @@ abstract class UI {
                 }
             } catch (NullPointerException e) {
                 displayTransportNotFound();
-            } catch (EmptyArray a) {
-                displayArrayEmpty();
+            } catch (RepeatNumberExeption a) {
+                displayNumberIsNotUnique();
             }
         }
     }
@@ -93,43 +96,8 @@ abstract class UI {
     /**
      * Вывод сообщения о том, что транспорт не найден
      */
-    static void displayArrayEmpty() {
-        displayInfo("Массив пуст!");
-    }
-
-    private static void displayDefault(Transport transport) {
-        displayInfo("Цена " + transport.price + "\nПробег " + transport.mileage + "\nМарка "
-                + transport.brand + "\nГод выпуска " + transport.issueYear + "\nНомер "
-                + transport.registration_number);
-    }
-
-    /**
-     * Вывод параметров автомобиля
-     *
-     * @param auto автомобиль
-     */
-    static public void displayAuto(Auto auto) {
-        displayInfo("Автомобиль \n");
-        displayDefault(auto);
-        displayInfo("Привод " + auto.drive + "\n" + auto.hand + "\nКузов " + auto.body
-                + "\nКоробка передач " + auto.transmission + "\nЧисло дверей " + auto.doors + "\n");
-    }
-
-    /**
-     * Вывод параметров мотоцикла
-     *
-     * @param moto мотоцикл
-     */
-
-    static public void displayMoto(Moto moto) {
-        displayInfo("Мотоцикл \n");
-        displayDefault(moto);
-        displayInfo("Тип " + moto.type + "\n" + "Число колёс " + moto.wheelsNum + "\n"
-                + "Топливная система " + moto.fuelSystem);
-        if (moto.electroStarter) displayInfo("Электростартер");
-        if (moto.sidecarEnabled) displayInfo("Возможность установки коляски");
-        displayInfo("\n");
-
+    static void displayNumberIsNotUnique() {
+        displayInfo("Транспорт с данным номером уже существует!");
     }
 
     /**
@@ -137,7 +105,7 @@ abstract class UI {
      *
      * @param pattern паттерн
      */
-    static public String inputField(Pattern pattern) {
+     public String inputField(Pattern pattern) {
         String a = inputInfo();
         while (!pattern.matcher(a).matches()) {
             displayInfo("Неверное значение, введите другое");
@@ -149,7 +117,7 @@ abstract class UI {
     /**
      * Создать транспорт
      */
-    static Transport createTransport() {
+     Transport createTransport() {
         displayInfo("Какой тип транспорта хотите создать 1 - Автомобиль 2 - Мотоцикл");
         String a = inputInfo();
         return switch (a) {
@@ -165,7 +133,7 @@ abstract class UI {
      * @param a изменяемый транспорт
      * @return измененный транспорт
      */
-    static Transport changeField(Transport a) {
+     Transport changeField(Transport a) {
         try {
             if (a instanceof Auto)
                 displayInfo("Введите номер изменяемого поля 1 - registration_number, 2 - mileage, 3 - price," +
@@ -225,10 +193,11 @@ abstract class UI {
     /**
      * Ввод автомобиля
      */
-    static public Auto inputAuto() {
+     public Auto inputAuto() {
         displayInfo("Введите параметры автомобиля");
         displayInfo("Введите номер");
         String number = inputField(number_pattern);
+        checkNumberUnique(number);
         displayInfo("Введите пробег");
         int mileage = Integer.parseInt(inputField(positive_int_pattern));
         displayInfo("Введите цену");
@@ -253,10 +222,11 @@ abstract class UI {
     /**
      * Ввод мотоцикла
      */
-    static public Moto inputMoto() {
+     public Moto inputMoto() {
         displayInfo("Введите параметры мотоцикла");
         displayInfo("Введите номер");
         String number = inputField(number_pattern);
+        checkNumberUnique(number);
         displayInfo("Введите пробег");
         int mileage = Integer.parseInt(inputField(positive_int_pattern));
         displayInfo("Введите цену");
